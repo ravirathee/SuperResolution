@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Interactive SuperResolution demo by Ravi Rathee.">
+    <title>SuperResolution</title>
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="intro-panel" aria-labelledby="pageTitle">
+        <p class="eyebrow">Image enhancement experiment</p>
+        <h1 id="pageTitle">SuperResolution</h1>
+        <p>
+          I built this project around a video super-resolution pipeline: source
+          clips are split into frames, each frame can be treated as low-resolution
+          input, then reconstructed into a sharper high-resolution preview.
+        </p>
+        <p>
+          For hosting, I converted the idea into a static browser demo. The page
+          takes one extracted frame, simulates downsampling, upscales it back, and
+          applies an edge-recovery pass on canvas so the enhancement flow is visible
+          without running a Python model server.
+        </p>
+
+        <div class="process-list" aria-label="Enhancement process">
+          <span>Frame extraction from source video</span>
+          <span>Low-resolution simulation by downsampling</span>
+          <span>Canvas reconstruction with smoothing and sharpening</span>
+        </div>
+
+        <div class="control-stack" aria-label="Super resolution controls">
+          <label class="file-control">
+            <span>Use your image</span>
+            <input id="imageInput" type="file" accept="image/*">
+          </label>
+
+          <label>
+            <span>Scale factor <output id="scaleValue">4x</output></span>
+            <input id="scaleInput" type="range" min="2" max="6" step="1" value="4">
+          </label>
+
+          <label>
+            <span>Sharpening <output id="sharpnessValue">55%</output></span>
+            <input id="sharpnessInput" type="range" min="0" max="100" step="5" value="55">
+          </label>
+        </div>
+      </section>
+
+      <section class="demo-panel" aria-label="Interactive super resolution comparison">
+        <div class="toolbar">
+          <div>
+            <span>Drag across the image</span>
+            <strong>Before and after comparison</strong>
+          </div>
+          <button id="sampleBtn" type="button">Load sample</button>
+        </div>
+
+        <div class="compare-frame" id="compareFrame">
+          <canvas id="enhancedCanvas" width="960" height="540"></canvas>
+          <canvas id="lowCanvas" width="960" height="540"></canvas>
+          <span class="image-label image-label--before">Degraded input</span>
+          <span class="image-label image-label--after">Enhanced output</span>
+          <input id="compareSlider" class="compare-slider" type="range" min="0" max="100" value="50" aria-label="Before after comparison position">
+          <div class="divider" id="divider" aria-hidden="true"></div>
+        </div>
+
+        <div class="metrics-strip" aria-label="Enhancement metrics">
+          <div>
+            <span>Working size</span>
+            <strong id="resolutionMetric">960 x 540</strong>
+          </div>
+          <div>
+            <span>Low-res source</span>
+            <strong id="lowResMetric">240 x 135</strong>
+          </div>
+          <div>
+            <span>Recovery pass</span>
+            <strong id="sharpnessMetric">55%</strong>
+          </div>
+        </div>
+
+        <div class="preview-grid" aria-label="Separate before and after previews">
+          <figure>
+            <canvas id="lowPreview" width="480" height="270"></canvas>
+            <figcaption>Low-res input enlarged with blocky pixels</figcaption>
+          </figure>
+          <figure>
+            <canvas id="enhancedPreview" width="480" height="270"></canvas>
+            <figcaption>Smoothed upscale with sharpened edges</figcaption>
+          </figure>
+        </div>
+      </section>
+    </main>
+
+    <script src="./app.js" type="module"></script>
+  </body>
+</html>
